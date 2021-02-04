@@ -13,6 +13,8 @@ Also experimental povray editor is included, as separate plugin:
 
 # Usage
 
+Please see the [scad2pov-example](https://github.com/erdinc09/scad2pov-example). 
+
 1. write scad in eclipse (by using this plugin):
 
 ![](./docs/eclipse_plugin_view.png)
