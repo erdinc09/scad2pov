@@ -1,0 +1,13 @@
+/bin
+/test-bin
+*._trace
+*.xtendbin
+
+/.m2/
+bin/
+build/
+.gradle/
+*._trace
+*.xtendbin
+org.eclipse.buildship.core.prefs
+.DS_Store

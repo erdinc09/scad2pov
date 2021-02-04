@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) 2020-2021 Ahmet Erdinç Yılmaz -- <ahmeterdinc09@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation; version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ */
+
+grammar com.karalisoft.Scad with org.eclipse.xtext.common.Terminals hidden(WS, ML_COMMENT, SL_COMMENT)
+
+generate scad "http://www.karalisoft.com/Scad"
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+//https://blogs.itemis.com/en/debugging-xtext-grammars-what-to-do-when-your-language-is-ambiguous
+//https://www.euclideanspace.com/software/development/eclipse/xtext/grammar/syntacticPredicates/index.htm
+Model:
+	blocks+=(Shape | Module | Function | ModuleOrFunctionCall | UseOrInclude)*;
+
+ModuleOrFunction returns ModuleOrFunction:
+	(Module | Function);
+
+UseOrInclude returns UseOrInclude:
+	{UseOrInclude} ('use' | 'include') '<' ID '.' ID '>' (=> ';')*;
+
+Module:
+	{Module} 'module' name=ID '(' ')' ('{' blocks+=(Module | Shape | Function | ModuleOrFunctionCall |
+	TransformedModuleOrFunctionCall)* '}') (=> ';')*;
+
+Function returns Function:
+	{Function} 'function' name=ID '(' ')' (=> ';')*;
+
+	//ModuleOrFunctionCall:
+//	name=[ModuleOrFunction] '(' ')' ';';
+ModuleOrFunctionCall:
+	name=ID '(' ')' ';';
+
+Transformation:
+	Translate | Scale | Rotate;
+
+Translate returns Translate:
+	{Translate} ('translate' '(' '[' x=Double ',' y=Double ',' z=Double ']' ')');
+
+Rotate returns Rotate:
+	{Rotate} ('rotate' '(' '[' x=Double ',' y=Double ',' z=Double ']' ')');
+
+Scale returns Scale:
+	{Scale} ('scale' '(' (('[' x=Double ',' y=Double ',' z=Double ']') | (scale=Double)) ')');
+
+Shape returns Shape:
+	{Shape}
+	impl=(TransformedShape | Union |
+	Intersection |
+	Difference |
+	Sphere |
+	Cylinder |
+	Cube);
+
+TransformedShape returns TransformedShape:
+	{TransformedShape} translations+=(Translate | Rotate | Scale)+ '{'
+	impl+=Shape+
+	'}' (=> ';')*;
+
+TransformedModuleOrFunctionCall returns TransformedModuleOrFunctionCall:
+	{TransformedModuleOrFunctionCall} translations+=(Translate | Rotate | Scale)+ '{'
+	impl+=ModuleOrFunctionCall+
+	'}' (=> ';')*;
+
+Sphere returns Sphere:
+	{Sphere} ('sphere' '('
+	(sphereParams+=SphereParams (',' sphereParams+=SphereParams)*)?
+	')' (=> ';')+);
+
+SphereParams returns SphereParams:
+	{SphereParams} (('$fn' '=' fn=Double) |
+	('$fa' '=' fa=Double) |
+	('$fs' '=' fs=Double) |
+	('r' '=' r=Double) |
+	('d' '=' d=Double));
+
+Cylinder returns Cylinder:
+	{Cylinder} ('cylinder' '('
+	(cylinderParams+=CylinderParams (',' cylinderParams+=CylinderParams)*)?
+	')' (=> ';')+);
+
+CylinderParams returns CylinderParams:
+	{CylinderParams}
+	(('$fn' '=' fn=Double) |
+	('$fa' '=' fa=Double) |
+	('$fs' '=' fs=Double) |
+	('h' '=' h=Double) |
+	('r' '=' r=Double) |
+	('r1' '=' r1=Double) |
+	('r2' '=' r2=Double) |
+	('d' '=' d=Double) |
+	('d1' '=' d1=Double) |
+	('d2' '=' d2=Double) |
+	//(unnamed+=Double) | //TODO: bunu dusunelim!
+	(('center' '=')? center=('true' | 'false')));
+
+Cube returns Cube:
+	{Cube} ('cube' '('
+	(cubeParams+=CubeParams (',' cubeParams+=CubeParams)*)?
+	')' (=> ';')+);
+
+CubeParams returns CubeParams:
+	{CubeParams} ((('size' '=')? ((size=Double) | ('[' x=Double ',' y=Double ',' z=Double ']'))) |
+	(('center' '=')? center=('true' | 'false')));
+
+Union returns Union:
+	{Union} ('union' '(' ')' '{' shapes+=(Shape | ModuleOrFunctionCall | TransformedModuleOrFunctionCall)* '}' (=> ';')*);
+
+Intersection returns Intersection:
+	{Intersection} ('intersection' '(' ')' '{' shapes+=(Shape | ModuleOrFunctionCall | TransformedModuleOrFunctionCall)*
+	'}' (=> ';')*);
+
+Difference returns Difference:
+	{Difference} ('difference' '(' ')' '{' shapes+=(Shape | ModuleOrFunctionCall | TransformedModuleOrFunctionCall)* '}'
+	(=> ';')*);
+
+Double returns ecore::EDoubleObject:
+	('+' | '-')? (INT ('.' INT)?);
+	
+

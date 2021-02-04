@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Editor
+Bundle-SymbolicName: com.karalisoft.povray.editor;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: KARALISOFT
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors
+Automatic-Module-Name: com.karalisoft.povray.editor
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Activator: com.karalisoft.povray.PovrayPlugin
+Bundle-ActivationPolicy: lazy

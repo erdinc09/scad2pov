@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: com.karalisoft.scad
+Bundle-ManifestVersion: 2
+Bundle-Name: com.karalisoft.scad
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: com.karalisoft.scad; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.eclipse.xtend.lib;bundle-version="2.14.0",
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: com.karalisoft.serializer,
+ com.karalisoft.scoping,
+ com.karalisoft.generator,
+ com.karalisoft.scad,
+ com.karalisoft,
+ com.karalisoft.parser.antlr.internal,
+ com.karalisoft.scad.impl,
+ com.karalisoft.services,
+ com.karalisoft.parser.antlr,
+ com.karalisoft.validation,
+ com.karalisoft.scad.util,
+ com.karalisoft.formatting2
+Import-Package: org.apache.log4j

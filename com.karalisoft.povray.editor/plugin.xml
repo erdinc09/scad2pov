@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            id="com.karalisoft.povray.editor.PovrayEditor"
+            name="Povray Editor"
+            icon="icons/povray.png"
+            extensions="pov"
+            class="com.karalisoft.povray.editor.PovrayEditor">
+      </editor>
+   </extension>
+
+  <extension
+         point="org.eclipse.ui.commands">
+      <command
+            name="Format"
+            description="Format"
+            id="com.karalisoft.povray.editor.format">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.bindings">
+           <key
+            sequence="M1+M2+F"
+            contextId="org.eclipse.ui.textEditorScope"
+            commandId="com.karalisoft.povray.editor.format"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+   </extension>
+      <extension
+          point="org.eclipse.ui.contexts">
+       <context
+             name="Povray Editor"
+             description="Povray Editor"
+             parentId="org.eclipse.ui.textEditorScope"
+             id="ccom.karalisoft.povray.editor.povrayEditorScope">
+       </context>
+   </extension>
+</plugin>
